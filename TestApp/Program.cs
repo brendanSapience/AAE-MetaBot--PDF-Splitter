@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDfSplitLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,10 @@ namespace TestApp
     {
         static void Main(string[] args)
         {
+            PdfUtils utils = new PdfUtils();
+            utils.SetFile("MyPdfFile");
+            utils.TestTesseract();
+
         }
     }
 }

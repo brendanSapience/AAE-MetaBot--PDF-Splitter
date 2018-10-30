@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PDfSplitLib\PDfSplitLib.csproj">
+      <Project>{3de09cf9-c291-4f87-b67e-f390e765f3d8}</Project>
+      <Name>PDfSplitLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
