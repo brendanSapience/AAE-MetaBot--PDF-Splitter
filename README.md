@@ -1,4 +1,4 @@
-# Metabot for CSV Files
+# Metabot for Splitting PDF Files
 
 Automation Anywhere Metabot for PDF Splitting
 
