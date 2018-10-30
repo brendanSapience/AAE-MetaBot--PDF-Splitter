@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDfSplitLib", "PDfSplitLib\PDfSplitLib.csproj", "{3DE09CF9-C291-4F87-B67E-F390E765F3D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{0D58B6A0-6EA0-4175-A5DE-8294876FBC12}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DE09CF9-C291-4F87-B67E-F390E765F3D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DE09CF9-C291-4F87-B67E-F390E765F3D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DE09CF9-C291-4F87-B67E-F390E765F3D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DE09CF9-C291-4F87-B67E-F390E765F3D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D58B6A0-6EA0-4175-A5DE-8294876FBC12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D58B6A0-6EA0-4175-A5DE-8294876FBC12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D58B6A0-6EA0-4175-A5DE-8294876FBC12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D58B6A0-6EA0-4175-A5DE-8294876FBC12}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2D74B60-734A-4165-BDE1-D78D6D04D18C}
+	EndGlobalSection
+EndGlobal
