@@ -31,9 +31,9 @@ namespace PDfSplitLib
 
         public void TestTesseract()
         {
-            // Split PDF into individual Pages
-    
+            // Split PDF into individual Pages using PDFSharp (PDFSharp in NuGet Package Manager)
 
+            /*
             // Get a fresh copy of the sample PDF file
             const string filename = "90000081.pdf";
             File.Copy(Path.Combine("C:/dev/docs/",filename),
@@ -59,30 +59,28 @@ namespace PDfSplitLib
                 Console.Write(Str+"\n");
                 outputDocument.Save("C:/dev/docs/"+Str);
             }
+            */
+
+            PdfSharpUtils psu = new PdfSharpUtils();
+            psu.SplitAllPDFPages(@"C:\dev\docs\", "90000081.pdf", "C:/dev/docs/split");
 
             // Now convert each pdf file into a png file
+            // requires ImageMagick Wrapper for C# (Magick.NET Q16 Any CPU in NuGet Package manager)
+            // because we do PDF conversions, the target system on which this is running requires install GhostScript
 
-            MagickReadSettings settings = new MagickReadSettings();
-            // Settings the density to 300 dpi will create an image with a better quality
-            settings.Density = new Density(150,150);
+            ImageMagickUtils imu = new ImageMagickUtils(300,300);
+            imu.ConvertPDFToPng(@"C:\dev\docs\split\90000081 - Page 1_tempfile.pdf", @"C:\dev\docs\split\90000081 - Page 1_tempfile.png");
 
-            using (MagickImageCollection images = new MagickImageCollection())
-            {
-                // Add all the pages of the pdf file to the collection
-                images.Read(@"C:\dev\docs\split\90000081 - Page 1_tempfile.pdf", settings);
+            // Now using Tesseract to OCR the single pdf page turned into a png file (Tesseract in NuGet Package Manager)
+            // this involves downloading the Tesseract language data files locally (see tessdata below).
 
-                int page = 1;
-                foreach (MagickImage image in images)
-                {
-                    // Write page to file that contains the page number
-                    image.Write(@"C:\dev\docs\split\90000081 - Page 1_tempfile" + page + ".png");
-                    // Writing to a specific format works the same as for a single image
-                    //image.Format = MagickFormat.Ptif;
-                    //image.Write(@"C:\dev\docs\split\90000081 - Page 1_tempfile" + page + ".tif");
-                    page++;
-                }
-            }
+            TesseractUtils tu = new TesseractUtils(@"C:\dev\tessdata", "eng");
+            TesseractOutput to = tu.OCRImageFile(@"C:\dev\docs\split\90000081 - Page 1_tempfile1.png");
+            Console.Write(to.getText());
+            Console.ReadKey();
 
+
+            /*
             try
             {
                 var testImagePath = @"C:\dev\docs\split\90000081 - Page 1_tempfile1.png";
@@ -144,6 +142,7 @@ namespace PDfSplitLib
                 Console.WriteLine(e.ToString());
                 Console.ReadKey();
             }
+            */
         }
     }
 
