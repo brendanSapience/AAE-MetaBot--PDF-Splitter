@@ -42,7 +42,7 @@ namespace PDfSplitLib
 
                 // Add the page and save it
                 outputDocument.AddPage(inputDocument.Pages[idx]);
-                String Str = String.Format("{0} - Page {1}_tempfile.pdf", name, idx + 1);
+                String Str = String.Format("{1}_{0}_tempfile.pdf", name, idx + 1);
                 Console.Write(Str + "\n");
                 outputDocument.Save(PathToOutputFolder + Str);
             }

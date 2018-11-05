@@ -19,9 +19,13 @@ namespace PDfSplitLib
     public class PdfUtils
     {
         private String FilePath = "";
-        private System.IO.StreamReader reader;
+        private Guid guid;
 
-        public PdfUtils() { }
+        public PdfUtils() {
+
+            Guid g = Guid.NewGuid();
+            this.guid = g;
+        }
 
         public void SetFile(String PathToCsvFile)
         {
@@ -29,120 +33,102 @@ namespace PDfSplitLib
 
         }
 
-        public void TestTesseract()
+        public List<String> FindPageWithString(Dictionary<String,String> InputDict, String StringToFind)
+        {
+            List<String> l = new List<String>();
+
+            foreach (KeyValuePair<String, String> entry in InputDict)
+            {
+                //entry.Value entry.Key
+                String PageContent = entry.Value;
+                if (PageContent.Contains(StringToFind))
+                {
+                    l.Add(entry.Key);
+                }
+
+            }
+            return l;
+        }
+
+        public String FindPageWithHeaderAndFooter(Dictionary<String, String> InputDict, String Header, String Footer)
+        {
+            List<String> Allheaders = new List<String>();
+            Allheaders = FindPageWithString(InputDict, Header);
+
+            List<String> AlLFooters = new List<String>();
+            AlLFooters = FindPageWithString(InputDict, Footer);
+            String output = "";
+            if(Allheaders.Count() == AlLFooters.Count())
+            {
+                int i = 0;
+                while(i < Allheaders.Count())
+                {
+                    output = output + "[";
+                    String HeaderPage = Allheaders[i];
+                    String FooterPage = AlLFooters[i];
+                    output = output + HeaderPage + "-" + FooterPage + "]";
+
+
+                    i++;
+
+
+                }
+            }
+            return output;
+        }
+
+        public Dictionary<String,String> GetDictionaryFromPdf(String RootPath, String FileName)
         {
             // Split PDF into individual Pages using PDFSharp (PDFSharp in NuGet Package Manager)
+            Dictionary<String, String> DocumentContent = new Dictionary<String, String>();
 
-            /*
-            // Get a fresh copy of the sample PDF file
-            const string filename = "90000081.pdf";
-            File.Copy(Path.Combine("C:/dev/docs/",filename),
-              Path.Combine(Directory.GetCurrentDirectory(), filename), true);
+            //String RootPath = @"C:\dev\docs\";
+            // "90000081.pdf"
 
-            // Open the file
-            PdfDocument inputDocument = PdfReader.Open(filename, PdfDocumentOpenMode.Import);
+            String TempPath = RootPath + guid+@"\";
 
-            string name = Path.GetFileNameWithoutExtension(filename);
-            for (int idx = 0; idx < inputDocument.PageCount; idx++)
-            {
-                // Create new document
-                Console.Write("Debug: "+idx);
-                PdfDocument outputDocument = new PdfDocument();
-                outputDocument.Version = inputDocument.Version;
-                outputDocument.Info.Title =
-                  String.Format("Page {0} of {1}", idx + 1, inputDocument.Info.Title);
-                outputDocument.Info.Creator = inputDocument.Info.Creator;
-
-                // Add the page and save it
-                outputDocument.AddPage(inputDocument.Pages[idx]);
-                String Str = String.Format("{0} - Page {1}_tempfile.pdf", name, idx + 1);
-                Console.Write(Str+"\n");
-                outputDocument.Save("C:/dev/docs/"+Str);
-            }
-            */
+            System.IO.Directory.CreateDirectory(TempPath);
 
             PdfSharpUtils psu = new PdfSharpUtils();
-            psu.SplitAllPDFPages(@"C:\dev\docs\", "90000081.pdf", "C:/dev/docs/split");
+            psu.SplitAllPDFPages(RootPath, FileName, TempPath);
 
             // Now convert each pdf file into a png file
             // requires ImageMagick Wrapper for C# (Magick.NET Q16 Any CPU in NuGet Package manager)
             // because we do PDF conversions, the target system on which this is running requires install GhostScript
 
-            ImageMagickUtils imu = new ImageMagickUtils(300,300);
-            imu.ConvertPDFToPng(@"C:\dev\docs\split\90000081 - Page 1_tempfile.pdf", @"C:\dev\docs\split\90000081 - Page 1_tempfile.png");
+            ImageMagickUtils imu = new ImageMagickUtils(300, 300);
+
+            string[] PdfFiles = Directory.GetFiles(TempPath, "*.pdf", SearchOption.TopDirectoryOnly);
+            foreach(string filepath in PdfFiles)
+            {
+                imu.ConvertPDFToPng(filepath, filepath+".png");
+            }
 
             // Now using Tesseract to OCR the single pdf page turned into a png file (Tesseract in NuGet Package Manager)
             // this involves downloading the Tesseract language data files locally (see tessdata below).
 
             TesseractUtils tu = new TesseractUtils(@"C:\dev\tessdata", "eng");
-            TesseractOutput to = tu.OCRImageFile(@"C:\dev\docs\split\90000081 - Page 1_tempfile1.png");
-            Console.Write(to.getText());
-            Console.ReadKey();
 
-
-            /*
-            try
+            string[] PngFiles = Directory.GetFiles(TempPath, "*.png", SearchOption.TopDirectoryOnly);
+            foreach (string filepath in PngFiles)
             {
-                var testImagePath = @"C:\dev\docs\split\90000081 - Page 1_tempfile1.png";
-                using (var engine = new TesseractEngine(@"C:\dev\tessdata", "eng", EngineMode.Default))
-                {
-                    using (var img = Pix.LoadFromFile(testImagePath))
-                    {
-                        using (var page = engine.Process(img))
-                        {
-                            var text = page.GetText();
-                            Console.WriteLine("Mean confidence: {0}", page.GetMeanConfidence());
+                Console.Write("Processing File: " + filepath);
 
-                            Console.WriteLine("Text (GetText): \r\n{0}", text);
-                            Console.WriteLine("Text (iterator):");
-                            using (var iter = page.GetIterator())
-                            {
-                                iter.Begin();
+                String filename = Path.GetFileName(filepath);
+                String[] tempArr = filename.Split('_');
+                String PageNum = tempArr[0];
+                Console.Write("Page Number: " + PageNum);
+                
 
-                                do
-                                {
-                                    do
-                                    {
-                                        do
-                                        {
-                                            do
-                                            {
-                                                if (iter.IsAtBeginningOf(PageIteratorLevel.Block))
-                                                {
-                                                    Console.WriteLine("<BLOCK>");
-                                                }
-
-                                                Console.Write(iter.GetText(PageIteratorLevel.Word));
-                                                Console.Write(" ");
-
-                                                if (iter.IsAtFinalOf(PageIteratorLevel.TextLine, PageIteratorLevel.Word))
-                                                {
-                                                    Console.WriteLine();
-                                                }
-                                            } while (iter.Next(PageIteratorLevel.TextLine, PageIteratorLevel.Word));
-
-                                            if (iter.IsAtFinalOf(PageIteratorLevel.Para, PageIteratorLevel.TextLine))
-                                            {
-                                                Console.WriteLine();
-                                            }
-                                        } while (iter.Next(PageIteratorLevel.Para, PageIteratorLevel.TextLine));
-                                    } while (iter.Next(PageIteratorLevel.Block, PageIteratorLevel.Para));
-                                } while (iter.Next(PageIteratorLevel.Block));
-                            }
-                        }
-                    }
-                }
-                Console.ReadKey();
+                TesseractOutput to = tu.OCRImageFile(filepath);
+                //Console.Write(to.getText());
+                DocumentContent.Add(PageNum, to.getText());
+                //Console.ReadKey();
+                
             }
-            catch (Exception e)
-            {
-                Trace.TraceError(e.ToString());
-                Console.WriteLine("Unexpected Error: " + e.Message);
-                Console.WriteLine("Details: ");
-                Console.WriteLine(e.ToString());
-                Console.ReadKey();
-            }
-            */
+
+            return DocumentContent;
+            
         }
     }
 
