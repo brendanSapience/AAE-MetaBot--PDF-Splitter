@@ -54,8 +54,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="F1.cs" />
+    <Compile Include="F2.cs" />
     <Compile Include="ImagemagickUtils.cs" />
     <Compile Include="PdfSharpUtils.cs" />
+    <Compile Include="PdfSplitServices.cs" />
     <Compile Include="PdfUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TesseractUtils.cs" />
