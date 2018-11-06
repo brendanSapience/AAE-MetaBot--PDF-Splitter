@@ -14,7 +14,13 @@ namespace PDfSplitLib
             return f1.GetListOfPagesContainingString(PDFFilePath, PDFFileName, StringToFind);
         }
 
-        public String SidsSpecialFunction(String PDFFilePath, String PDFFileName, String StringToFind)
+        public String GetRangesFromKeywordAndPageCount(String PDFFilePath, String PDFFileName, String Keyword)
+        {
+            F1 f1 = new F1();
+            return f1.GetRangesFromKeywordAndPageCount(PDFFilePath, PDFFileName, Keyword);
+        }
+
+            public String SidsSpecialFunction(String PDFFilePath, String PDFFileName, String StringToFind)
         {
             F2 f2 = new F2();
             return f2.SidsSpecialFunction(PDFFilePath, PDFFileName, StringToFind);

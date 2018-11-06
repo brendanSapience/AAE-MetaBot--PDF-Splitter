@@ -14,8 +14,11 @@ namespace TestApp
 
             PdfSplitServices pss = new PdfSplitServices();
 
-            String Result = pss.GetListOfPagesContainingString(@"C:\dev\docs\", "90000081.pdf", "Invoice");
-            Console.Write("Page List: " + Result);
+            //String Result = pss.GetListOfPagesContainingString(@"C:\dev\docs\", "90000081.pdf", "Invoice");
+
+            String Res = pss.GetRangesFromKeywordAndPageCount(@"C:\dev\docs\", "90000081.pdf", "Certificate of Analysis");
+
+            Console.Write("Output: "+Res);
             Console.ReadKey();
 
 

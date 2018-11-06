@@ -25,7 +25,7 @@ namespace PDfSplitLib
             //File.Copy(Path.Combine(PathToFolderContainingPDF, filename),Path.Combine(Directory.GetCurrentDirectory(), filename), true);
 
             String CompleteFilePath = Path.Combine(PathToFolderContainingPDF, PDFFileName);
-            Console.Write("Debug:" + CompleteFilePath);
+            Console.Write("\nDEBUG: File Being Processed: " + CompleteFilePath);
             // Open the file
             PdfDocument inputDocument = PdfReader.Open(Path.Combine(PathToFolderContainingPDF, PDFFileName), PdfDocumentOpenMode.Import);
 
@@ -33,7 +33,7 @@ namespace PDfSplitLib
             for (int idx = 0; idx < inputDocument.PageCount; idx++)
             {
                 // Create new document
-                Console.Write("Debug: " + idx);
+                //Console.Write("Debug: " + idx);
                 PdfDocument outputDocument = new PdfDocument();
                 outputDocument.Version = inputDocument.Version;
                 outputDocument.Info.Title =
@@ -43,7 +43,7 @@ namespace PDfSplitLib
                 // Add the page and save it
                 outputDocument.AddPage(inputDocument.Pages[idx]);
                 String Str = String.Format("{1}_{0}_tempfile.pdf", name, idx + 1);
-                Console.Write(Str + "\n");
+                Console.Write("\nDEBUG: Temp File Name Generated: "+Str);
                 outputDocument.Save(PathToOutputFolder + Str);
             }
 

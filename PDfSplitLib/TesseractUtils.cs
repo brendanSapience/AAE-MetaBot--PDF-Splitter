@@ -35,7 +35,7 @@ namespace PDfSplitLib
                         using (var page = engine.Process(img))
                         {
                             var text = page.GetText();
-                            Console.WriteLine("Mean confidence: {0}", page.GetMeanConfidence());
+                            Console.WriteLine("\nDEBUG: Tesseract Mean Confidence: {0}", page.GetMeanConfidence());
 
                             TesseractOutput to = new TesseractOutput(page.GetMeanConfidence(), text);
                             return to;
@@ -47,8 +47,8 @@ namespace PDfSplitLib
             catch (Exception e)
             {
                 Trace.TraceError(e.ToString());
-                Console.WriteLine("Unexpected Error: " + e.Message);
-                Console.WriteLine("Details: ");
+                Console.WriteLine("\nUnexpected Error: " + e.Message);
+                Console.WriteLine("\nDetails: ");
                 Console.WriteLine(e.ToString());
                 Console.ReadKey();
                 return null;
