@@ -16,9 +16,11 @@ namespace TestApp
 
             //String Result = pss.GetListOfPagesContainingString(@"C:\dev\docs\", "90000081.pdf", "Invoice");
 
-            String Res = pss.GetRangesFromKeywordAndPageCount(@"C:\dev\docs\", "90000081.pdf", "Certificate of Analysis");
+            
+            String Res = pss.GetRangesFromRegexGroup(@"C:\dev\docs\", "90000081-short.pdf", @"Invoice[ ]*n.[ ]*(\d+)");
+            //String Res = pss.GetRangesFromKeywordAndPageCount(@"C:\dev\docs\", "90000081.pdf", "Certificate of Analysis");
 
-            Console.Write("Output: "+Res);
+            Console.Write("\nOutput: "+Res);
             Console.ReadKey();
 
 

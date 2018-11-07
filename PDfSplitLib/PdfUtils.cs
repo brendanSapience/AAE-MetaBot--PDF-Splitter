@@ -1,4 +1,5 @@
 ﻿using ImageMagick;
+using Newtonsoft.Json;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using System;
@@ -33,51 +34,26 @@ namespace PDfSplitLib
 
         }
 
-        public List<String> FindPageWithString(Dictionary<String,String> InputDict, String StringToFind)
+
+        /*
+        public ConfigItem LoadJson()
         {
-            List<String> l = new List<String>();
-
-            foreach (KeyValuePair<String, String> entry in InputDict)
+            using (StreamReader r = new StreamReader(@".\config.json"))
             {
-                //entry.Value entry.Key
-                String PageContent = entry.Value;
-                if (PageContent.Contains(StringToFind))
-                {
-                    l.Add(entry.Key);
-                }
-
+                string json = r.ReadToEnd();
+                ConfigItem item = JsonConvert.DeserializeObject<ConfigItem>(json);
+                return item;
             }
-            return l;
         }
 
-        public String FindPageWithHeaderAndFooter(Dictionary<String, String> InputDict, String Header, String Footer)
+        public class ConfigItem
         {
-            List<String> Allheaders = new List<String>();
-            Allheaders = FindPageWithString(InputDict, Header);
 
-            List<String> AlLFooters = new List<String>();
-            AlLFooters = FindPageWithString(InputDict, Footer);
-            String output = "";
-            if(Allheaders.Count() == AlLFooters.Count())
-            {
-                int i = 0;
-                while(i < Allheaders.Count())
-                {
-                    output = output + "[";
-                    String HeaderPage = Allheaders[i];
-                    String FooterPage = AlLFooters[i];
-                    output = output + HeaderPage + "-" + FooterPage + "]";
+            public string tessdata;
 
-
-                    i++;
-
-
-                }
-            }
-            return output;
         }
-
-        public Dictionary<String,String> GetDictionaryFromPdf(String RootPath, String FileName)
+        */
+        public Dictionary<String, String> GetDictionaryFromPdf(String RootPath, String FileName, String PathToTessData, String Language, Boolean Debug)
         {
             // Split PDF into individual Pages using PDFSharp (PDFSharp in NuGet Package Manager)
             Dictionary<String, String> DocumentContent = new Dictionary<String, String>();
@@ -85,12 +61,12 @@ namespace PDfSplitLib
             //String RootPath = @"C:\dev\docs\";
             // "90000081.pdf"
 
-            String TempPath = RootPath + guid+@"\";
+            String TempPath = RootPath + guid + @"\";
 
             System.IO.Directory.CreateDirectory(TempPath);
 
             PdfSharpUtils psu = new PdfSharpUtils();
-            psu.SplitAllPDFPages(RootPath, FileName, TempPath);
+            psu.SplitAllPDFPages(RootPath, FileName, TempPath, Debug);
 
             // Now convert each pdf file into a png file
             // requires ImageMagick Wrapper for C# (Magick.NET Q16 Any CPU in NuGet Package manager)
@@ -99,33 +75,37 @@ namespace PDfSplitLib
             ImageMagickUtils imu = new ImageMagickUtils(300, 300);
 
             string[] PdfFiles = Directory.GetFiles(TempPath, "*.pdf", SearchOption.TopDirectoryOnly);
-            foreach(string filepath in PdfFiles)
+            foreach (string filepath in PdfFiles)
             {
-                imu.ConvertPDFToPng(filepath, filepath+".png");
+                imu.ConvertPDFToPng(filepath, filepath + ".png");
             }
 
             // Now using Tesseract to OCR the single pdf page turned into a png file (Tesseract in NuGet Package Manager)
             // this involves downloading the Tesseract language data files locally (see tessdata below).
+            //ConfigItem item = LoadJson();
 
-            TesseractUtils tu = new TesseractUtils(@"C:\dev\tessdata", "eng");
+            TesseractUtils tu = new TesseractUtils(PathToTessData, Language);
 
             string[] PngFiles = Directory.GetFiles(TempPath, "*.png", SearchOption.TopDirectoryOnly);
             foreach (string filepath in PngFiles)
             {
-                Console.Write("\nDEBUG: Processing Temp Image File: " + filepath);
+                if (Debug) { Console.Write("\nDEBUG: Processing Temp Image File: " + filepath); }
 
                 String filename = Path.GetFileName(filepath);
                 String[] tempArr = filename.Split('_');
                 String PageNum = tempArr[0];
-                Console.Write("\nDEBUG: Current Page Number: " + PageNum);
-                
+                if (Debug) { Console.Write("\nDEBUG: Current Page Number: " + PageNum); }
 
-                TesseractOutput to = tu.OCRImageFile(filepath);
+
+                TesseractOutput to = tu.OCRImageFile(filepath, Debug);
                 //Console.Write(to.getText());
                 DocumentContent.Add(PageNum, to.getText());
                 //Console.ReadKey();
-                
+
             }
+
+            // Delete Temp folder if not in Debug mode
+            if (!Debug) { System.IO.Directory.Delete(TempPath,true); }
 
             return DocumentContent;
             

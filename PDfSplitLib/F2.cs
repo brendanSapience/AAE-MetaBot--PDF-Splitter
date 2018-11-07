@@ -12,7 +12,7 @@ namespace PDfSplitLib
         public String SidsSpecialFunction(String PDFFilePath, String PDFFileName, String StringToFind)
         {
             PdfUtils pu = new PdfUtils();
-            Dictionary<String, String> myDict = pu.GetDictionaryFromPdf(PDFFilePath, PDFFileName);
+            Dictionary<String, String> myDict = pu.GetDictionaryFromPdf(PDFFilePath, PDFFileName, @"C:\dev\tessdata", "eng", false);
             List<String> ListOfPages = new List<String>();
             foreach (KeyValuePair<String, String> entry in myDict)
             {

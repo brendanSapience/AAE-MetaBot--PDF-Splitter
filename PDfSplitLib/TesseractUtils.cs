@@ -22,7 +22,7 @@ namespace PDfSplitLib
 
 
         // Processes exactly one page, returns data on 1 single page
-        public TesseractOutput OCRImageFile(String PathToPngFile)
+        public TesseractOutput OCRImageFile(String PathToPngFile, Boolean Debug)
         {
 
             try
@@ -35,7 +35,7 @@ namespace PDfSplitLib
                         using (var page = engine.Process(img))
                         {
                             var text = page.GetText();
-                            Console.WriteLine("\nDEBUG: Tesseract Mean Confidence: {0}", page.GetMeanConfidence());
+                            if (Debug) { Console.WriteLine("\nDEBUG: Tesseract Mean Confidence: {0}", page.GetMeanConfidence()); }
 
                             TesseractOutput to = new TesseractOutput(page.GetMeanConfidence(), text);
                             return to;
@@ -47,9 +47,9 @@ namespace PDfSplitLib
             catch (Exception e)
             {
                 Trace.TraceError(e.ToString());
-                Console.WriteLine("\nUnexpected Error: " + e.Message);
-                Console.WriteLine("\nDetails: ");
-                Console.WriteLine(e.ToString());
+                if (Debug) { Console.WriteLine("\nUnexpected Error: " + e.Message); }
+                if (Debug) { Console.WriteLine("\nDetails: "); }
+                if (Debug) { Console.WriteLine(e.ToString()); }
                 Console.ReadKey();
                 return null;
             }
