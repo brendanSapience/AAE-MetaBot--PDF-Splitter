@@ -53,10 +53,10 @@ namespace PDfSplitLib
 
         }
         */
-        public Dictionary<String, String> GetDictionaryFromPdf(String RootPath, String FileName, String PathToTessData, String Language, Boolean Debug)
+        public Dictionary<int, String> GetDictionaryFromPdf(String RootPath, String FileName, String PathToTessData, String Language, Boolean Debug)
         {
             // Split PDF into individual Pages using PDFSharp (PDFSharp in NuGet Package Manager)
-            Dictionary<String, String> DocumentContent = new Dictionary<String, String>();
+            Dictionary<int, String> DocumentContent = new Dictionary<int, String>();
 
             //String RootPath = @"C:\dev\docs\";
             // "90000081.pdf"
@@ -99,7 +99,15 @@ namespace PDfSplitLib
 
                 TesseractOutput to = tu.OCRImageFile(filepath, Debug);
                 //Console.Write(to.getText());
-                DocumentContent.Add(PageNum, to.getText());
+                int PageNumAsInt = -1;
+                try
+                {
+                    PageNumAsInt = Int32.Parse(PageNum);
+                }catch(Exception e)
+                {
+                    // do nothing and quit?
+                }
+                DocumentContent.Add(PageNumAsInt, to.getText());
                 //Console.ReadKey();
 
             }
