@@ -8,9 +8,19 @@ namespace PDfSplitLib
 {
     public class PdfSplitServices
     {
+        F1 f1 = new F1();
         // -------------------- Bren's ------------------ //
 
-        // Following method not ready
+        public void LoadPDFFile(String PDFFilePath, String PDFFileName)
+        { 
+            f1.LoadPdfFileContent(PDFFilePath,PDFFileName, @"C:\dev\tessdata", "eng");
+        }
+
+        public String GetRangesFromRegexGroup(String RegexWithRepeatedGroup)
+        {
+            return f1.GetRangesFromRegexGroup(RegexWithRepeatedGroup, true);
+        }
+
         public String GetRangesFromRegexGroup(String PDFFilePath, String PDFFileName, String RegexWithRepeatedGroup)
         {
             F1 f1 = new F1();
