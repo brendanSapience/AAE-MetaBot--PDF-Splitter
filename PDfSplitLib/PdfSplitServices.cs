@@ -11,9 +11,9 @@ namespace PDfSplitLib
         F1 f1 = new F1();
         // -------------------- Bren's ------------------ //
 
-        public void LoadPDFFile(String PDFFilePath, String PDFFileName)
+        public void LoadPDFFile(String PDFFilePath, String PDFFileName,Boolean Debug)
         { 
-            f1.LoadPdfFileContent(PDFFilePath,PDFFileName, @"C:\dev\tessdata", "eng");
+            f1.LoadPdfFileContent(PDFFilePath,PDFFileName, @"C:\dev\tessdata", "eng",Debug);
         }
 
         public String GetRangesFromRegexGroup(String RegexWithRepeatedGroup)

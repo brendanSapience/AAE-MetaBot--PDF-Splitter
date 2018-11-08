@@ -14,12 +14,12 @@ namespace PDfSplitLib
         public String LanguageCode = "";
         public F1() { }
 
-        public void LoadPdfFileContent(String RootPath, String FileName, String PathToTessData, String Language)
+        public void LoadPdfFileContent(String RootPath, String FileName, String PathToTessData, String Language, Boolean Debug)
         {
             PdfUtils pu = new PdfUtils();
             this.PathToTesseractDataFiles = PathToTessData;
             this.LanguageCode = Language;
-            Dictionary<int, String> myDict = pu.GetDictionaryFromPdf(RootPath, FileName, this.PathToTesseractDataFiles, this.LanguageCode, true);
+            Dictionary<int, String> myDict = pu.GetDictionaryFromPdf(RootPath, FileName, this.PathToTesseractDataFiles, this.LanguageCode, Debug);
             GlobalFileContentDict = myDict;
 
         }
@@ -72,7 +72,7 @@ namespace PDfSplitLib
 
             int DocumentSize = GlobalPdfDictionary.Count();
             int CurrentIndex = 1;
-            if (Debug) { Console.Write("\n Debug: Processing Index: " + CurrentIndex); }
+            if (Debug) { Console.WriteLine("\n Debug: Processing Index: " + CurrentIndex); }
             //Console.Write("Debug Idx vs docSize: " + CurrentIndex + ":" + DocumentSize);
 
             // Iterating over each page of the document in order
@@ -84,10 +84,10 @@ namespace PDfSplitLib
                 RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline; //RightToLeft: from last part of doc to first
                 if (Debug)
                 {
-                    Console.Write("\nDebug: Page " + CurrentIndex);
-                    Console.Write("\n ======= Page Content ==========");
-                    //Console.Write("\n" + PageContent);
-                    Console.Write("\n ======= End Of Page Content ==========");
+                    Console.WriteLine("\nDebug: Page " + CurrentIndex);
+                    Console.WriteLine("\n ======= Page Content ==========");
+                    //Console.WriteLine("\n" + PageContent);
+                    Console.WriteLine("\n ======= End Of Page Content ==========");
                 }
 
                 // We check the Regex (with Group) against the content of this page
@@ -97,13 +97,13 @@ namespace PDfSplitLib
                 // If there is no match, we go to the next page
                 if (match == null)
                 {
-                    if (Debug) { Console.Write("\nNo Match Found, Skipping Current Page: " + CurrentIndex); }
+                    if (Debug) { Console.WriteLine("\nNo Match Found, Skipping Current Page: " + CurrentIndex); }
                     CurrentIndex++;
                     continue;
                 }
 
                 // If there is a Match, we try to extract the Group
-                if (Debug) { Console.Write("\nMaster Match Found on Page: " + CurrentIndex); }
+                if (Debug) { Console.WriteLine("\nMaster Match Found on Page: " + CurrentIndex); }
                 // there should be 2 groups, group 0, the element expected on other pages
                 if (match.Groups.Count == 2)
                 {
@@ -112,8 +112,8 @@ namespace PDfSplitLib
 
                     if (Debug)
                     {
-                        Console.Write("\n 2 Group Matches Found.");
-                        Console.Write("\n Repeating Pattern: " + RepeatingPattern);
+                        Console.WriteLine("\n 2 Group Matches Found.");
+                        Console.WriteLine("\n Repeating Pattern: " + RepeatingPattern);
                     }
 
                     // We can start a range here: the current Page matched the Regex
@@ -130,8 +130,8 @@ namespace PDfSplitLib
                     {
                         // Taking a look at the next page (inner loop)
                         int PageToAnalyze = InnerLoopIdx;
-                        if (Debug) { Console.Write("\nAnalysis Minor Page: " + InnerLoopIdx); }
-                        if (Debug) { Console.Write("\nIF LOOP Analysis Minor Page: Checking if: " + PageToAnalyze + ">" + CurrentIndex); }
+                        if (Debug) { Console.WriteLine("\nAnalysis Minor Page: " + InnerLoopIdx); }
+                        if (Debug) { Console.WriteLine("\nIF LOOP Analysis Minor Page: Checking if: " + PageToAnalyze + ">" + CurrentIndex); }
 
                         String PageContent1 = GlobalPdfDictionary[InnerLoopIdx];
 
@@ -142,7 +142,7 @@ namespace PDfSplitLib
                         // If there is no match at all on the next page, we return to the main loop and start again on the same page
                         if (match1 == null || !PageContent1.Contains(RepeatingPattern))
                         {
-                            if (Debug) { Console.Write("\nNO Minor Match Found on Page: " + InnerLoopIdx); }
+                            if (Debug) { Console.WriteLine("\nNO Minor Match Found on Page: " + InnerLoopIdx); }
                             CurrentIndex++;
                             ExitLoop = true;
                             break;
@@ -152,7 +152,7 @@ namespace PDfSplitLib
                         if (PageContent1.Contains(RepeatingPattern))
                         {
                             // record PageNum1
-                            if (Debug) { Console.Write("\nMinor Match Found on Page: " + InnerLoopIdx); }
+                            if (Debug) { Console.WriteLine("\nMinor Match Found on Page: " + InnerLoopIdx); }
 
                             // we add the new page to existing Range.
                             DocRange = DocRange + "," + InnerLoopIdx;
@@ -171,7 +171,7 @@ namespace PDfSplitLib
                 }
                 else
                 {
-                    Console.Write("\n Master Match found, but 2 Groups could not be found, skipping.");
+                    Console.WriteLine("\n Master Match found, but 2 Groups could not be found, skipping.");
                     CurrentIndex++;
                     continue;
                 }
@@ -194,7 +194,7 @@ namespace PDfSplitLib
 
             int DocumentSize = GlobalPdfDictionary.Count();
             int CurrentIndex = 1;
-            if (Debug) { Console.Write("\n Debug: Processing Index: " + CurrentIndex); }
+            if (Debug) { Console.WriteLine("\n Debug: Processing Index: " + CurrentIndex); }
             //Console.Write("Debug Idx vs docSize: " + CurrentIndex + ":" + DocumentSize);
 
             // Iterating over each page of the document in order
@@ -206,10 +206,10 @@ namespace PDfSplitLib
                 RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline; //RightToLeft: from last part of doc to first
                 if (Debug)
                 {
-                    Console.Write("\nDebug: Page " + CurrentIndex);
-                    Console.Write("\n ======= Page Content ==========");
-                    //Console.Write("\n" + PageContent);
-                    Console.Write("\n ======= End Of Page Content ==========");
+                    Console.WriteLine("\nDebug: Page " + CurrentIndex);
+                    Console.WriteLine("\n ======= Page Content ==========");
+                    //Console.WriteLine("\n" + PageContent);
+                    Console.WriteLine("\n ======= End Of Page Content ==========");
                 }
 
                 // We check the Regex (with Group) against the content of this page
@@ -219,13 +219,13 @@ namespace PDfSplitLib
                 // If there is no match, we go to the next page
                 if (match == null)
                 {
-                    if (Debug) { Console.Write("\nNo Match Found, Skipping Current Page: " + CurrentIndex); }
+                    if (Debug) { Console.WriteLine("\nNo Match Found, Skipping Current Page: " + CurrentIndex); }
                     CurrentIndex++;
                     continue;
                 }
 
                 // If there is a Match, we try to extract the Group
-                if (Debug) { Console.Write("\nMaster Match Found on Page: " + CurrentIndex); }
+                if (Debug) { Console.WriteLine("\nMaster Match Found on Page: " + CurrentIndex); }
                 // there should be 2 groups, group 0, the element expected on other pages
                 if (match.Groups.Count == 2)
                 {
@@ -234,8 +234,8 @@ namespace PDfSplitLib
 
                     if (Debug)
                     {
-                        Console.Write("\n 2 Group Matches Found.");
-                        Console.Write("\n Repeating Pattern: " + RepeatingPattern);
+                        Console.WriteLine("\n 2 Group Matches Found.");
+                        Console.WriteLine("\n Repeating Pattern: " + RepeatingPattern);
                     }
 
                     // We can start a range here: the current Page matched the Regex
@@ -252,8 +252,8 @@ namespace PDfSplitLib
                     {
                         // Taking a look at the next page (inner loop)
                         int PageToAnalyze = InnerLoopIdx;
-                        if (Debug) { Console.Write("\nAnalysis Minor Page: " + InnerLoopIdx); }
-                        if (Debug) { Console.Write("\nIF LOOP Analysis Minor Page: Checking if: " + PageToAnalyze + ">" + CurrentIndex); }
+                        if (Debug) { Console.WriteLine("\nAnalysis Minor Page: " + InnerLoopIdx); }
+                        if (Debug) { Console.WriteLine("\nIF LOOP Analysis Minor Page: Checking if: " + PageToAnalyze + ">" + CurrentIndex); }
 
                         String PageContent1 = GlobalPdfDictionary[InnerLoopIdx];
 
@@ -264,7 +264,7 @@ namespace PDfSplitLib
                         // If there is no match at all on the next page, we return to the main loop and start again on the same page
                         if (match1 == null || !PageContent1.Contains(RepeatingPattern))
                         {
-                            if (Debug) { Console.Write("\nNO Minor Match Found on Page: " + InnerLoopIdx); }
+                            if (Debug) { Console.WriteLine("\nNO Minor Match Found on Page: " + InnerLoopIdx); }
                             CurrentIndex++;
                            ExitLoop = true;
                            break;
@@ -274,7 +274,7 @@ namespace PDfSplitLib
                         if (PageContent1.Contains(RepeatingPattern))
                         {
                             // record PageNum1
-                            if (Debug) { Console.Write("\nMinor Match Found on Page: " + InnerLoopIdx); }
+                            if (Debug) { Console.WriteLine("\nMinor Match Found on Page: " + InnerLoopIdx); }
                             
                             // we add the new page to existing Range.
                             DocRange = DocRange + "," + InnerLoopIdx;
@@ -293,7 +293,7 @@ namespace PDfSplitLib
                 }
                 else
                 {
-                    Console.Write("\n Master Match found, but 2 Groups could not be found, skipping.");
+                    Console.WriteLine("\n Master Match found, but 2 Groups could not be found, skipping.");
                     CurrentIndex++;
                     continue;
                 }
@@ -331,35 +331,35 @@ namespace PDfSplitLib
                     RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
                     if (Debug)
                     {
-                        Console.Write("\nDebug: Page " + entry.Key);
-                        Console.Write("\n ======= Page Content ==========");
-                        Console.Write("\n" + PageContent);
-                        Console.Write("\n ======= End Of Page Content ==========");
+                        Console.WriteLine("\nDebug: Page " + entry.Key);
+                        Console.WriteLine("\n ======= Page Content ==========");
+                        Console.WriteLine("\n" + PageContent);
+                        Console.WriteLine("\n ======= End Of Page Content ==========");
                     }
                     // There should only be 1 Match (one instance of Page of.*)
                     foreach (Match match in Regex.Matches(PageContent, pattern, options))
                     {
 
-                        if (Debug) { Console.Write("\nMatch Found."); }
+                        if (Debug) { Console.WriteLine("\nMatch Found."); }
                         // there should be 3 groups, group 0, the first page num and the last page num
                         if (match.Groups.Count == 3)
                         {
                             if (Debug)
-                            { Console.Write("\n 3 Matches Found."); }
+                            { Console.WriteLine("\n 3 Matches Found."); }
                             String CurrentPage = match.Groups[1].ToString();
                             String EndPage = match.Groups[2].ToString();
 
                             int CurrentPageNum = Int32.Parse(CurrentPage);
                             int EndPageNum = Int32.Parse(EndPage);
                             if (Debug)
-                            { Console.Write("\n Debug: " + CurrentPageNum + ":" + EndPageNum); }
+                            { Console.WriteLine("\n Debug: " + CurrentPageNum + ":" + EndPageNum); }
                             if (CurrentPageNum == 1)
                             {
                                 
                                 int EndIndex = entry.Key+ EndPageNum-1;
                                 ListOfRanges.Add(entry.Key + "-" + EndIndex);
                                 if (Debug)
-                                { Console.Write("Adding Range: " + entry.Key + "-" + EndIndex); }
+                                { Console.WriteLine("Adding Range: " + entry.Key + "-" + EndIndex); }
                             }
                         } 
                     }

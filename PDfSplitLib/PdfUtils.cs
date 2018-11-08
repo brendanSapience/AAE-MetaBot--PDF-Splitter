@@ -89,16 +89,16 @@ namespace PDfSplitLib
             string[] PngFiles = Directory.GetFiles(TempPath, "*.png", SearchOption.TopDirectoryOnly);
             foreach (string filepath in PngFiles)
             {
-                if (Debug) { Console.Write("\nDEBUG: Processing Temp Image File: " + filepath); }
+                if (Debug) { Console.WriteLine("\nDEBUG: Processing Temp Image File: " + filepath); }
 
                 String filename = Path.GetFileName(filepath);
                 String[] tempArr = filename.Split('_');
                 String PageNum = tempArr[0];
-                if (Debug) { Console.Write("\nDEBUG: Current Page Number: " + PageNum); }
+                if (Debug) { Console.WriteLine("\nDEBUG: Current Page Number: " + PageNum); }
 
 
                 TesseractOutput to = tu.OCRImageFile(filepath, Debug);
-                //Console.Write(to.getText());
+                //Console.WriteLine(to.getText());
                 int PageNumAsInt = -1;
                 try
                 {
