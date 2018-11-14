@@ -34,25 +34,6 @@ namespace PDfSplitLib
 
         }
 
-
-        /*
-        public ConfigItem LoadJson()
-        {
-            using (StreamReader r = new StreamReader(@".\config.json"))
-            {
-                string json = r.ReadToEnd();
-                ConfigItem item = JsonConvert.DeserializeObject<ConfigItem>(json);
-                return item;
-            }
-        }
-
-        public class ConfigItem
-        {
-
-            public string tessdata;
-
-        }
-        */
         public Dictionary<int, String> GetDictionaryFromPdf(String RootPath, String FileName, String PathToTessData, String Language, Boolean Debug)
         {
             // Split PDF into individual Pages using PDFSharp (PDFSharp in NuGet Package Manager)
@@ -60,6 +41,12 @@ namespace PDfSplitLib
 
             //String RootPath = @"C:\dev\docs\";
             // "90000081.pdf"
+          
+            // accounting for C:\mypath and C:\mypath\
+            if(!RootPath.EndsWith(@"\") && !RootPath.EndsWith("/"))
+            {
+                RootPath = RootPath + "/";
+            }
 
             String TempPath = RootPath + guid + @"\";
             String LogFile = TempPath + "run.log";
@@ -67,20 +54,20 @@ namespace PDfSplitLib
         
             System.IO.Directory.CreateDirectory(TempPath);
 
-            //File.Create(LogFile);
-
             StreamWriter w = File.AppendText(LogFile);
 
-            PdfSharpUtils psu = new PdfSharpUtils();
+            PdfSharpUtils psu = new PdfSharpUtils(w);
             psu.SplitAllPDFPages(RootPath, FileName, TempPath, Debug);
 
             // Now convert each pdf file into a png file
             // requires ImageMagick Wrapper for C# (Magick.NET Q16 Any CPU in NuGet Package manager)
             // because we do PDF conversions, the target system on which this is running requires install GhostScript
 
-            ImageMagickUtils imu = new ImageMagickUtils(300, 300);
+            ImageMagickUtils imu = new ImageMagickUtils(300, 300,w);
 
             string[] PdfFiles = Directory.GetFiles(TempPath, "*.pdf", SearchOption.TopDirectoryOnly);
+            w.WriteLine("DEBUG - Number of PDF Files Found: " + PdfFiles.Count());
+            w.Flush();
             foreach (string filepath in PdfFiles)
             {
                 imu.ConvertPDFToPng(filepath, filepath + ".png");
@@ -109,19 +96,22 @@ namespace PDfSplitLib
                 try
                 {
                     PageNumAsInt = Int32.Parse(PageNum);
-                }catch(Exception e)
+                    if (to != null)
+                    {
+                        w.WriteLine("DEBUG: Adding Document to Dictionary: " + PageNumAsInt);
+                        DocumentContent.Add(PageNumAsInt, to.getText());
+                    }
+                    else
+                    {
+                        w.WriteLine("DEBUG: ERROR, Could not add Document to Dictionary (Tesseract Output seems empty?): " + PageNumAsInt);
+                    }
+                }
+                catch(Exception e)
                 {
                     // do nothing and quit?
+                    w.WriteLine("DEBUG: Error in Page Number Retrieved from File Name (it isnt a valid Integer?): " + PageNum);
                 }
-                if(to != null)
-                {
-                    w.WriteLine("DEBUG: Adding Document to Dictionary: " + PageNumAsInt);
-                    DocumentContent.Add(PageNumAsInt, to.getText());
-                }
-                else
-                {
-                    w.WriteLine("DEBUG: ERROR, Could not add Document to Dictionary: " + PageNumAsInt);
-                }
+
 
                 //Console.ReadKey();
                 w.Flush();

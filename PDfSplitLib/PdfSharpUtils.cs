@@ -11,10 +11,11 @@ namespace PDfSplitLib
 {
     class PdfSharpUtils
     {
-   
-        public PdfSharpUtils()
-        {
 
+        StreamWriter w;
+        public PdfSharpUtils(StreamWriter w)
+        {
+            this.w = w;
         }
 
         public void SplitAllPDFPages(String PathToFolderContainingPDF, String PDFFileName, String PathToOutputFolder,Boolean Debug)
@@ -26,6 +27,7 @@ namespace PDfSplitLib
 
             String CompleteFilePath = Path.Combine(PathToFolderContainingPDF, PDFFileName);
             if (Debug){ Console.WriteLine("\nDEBUG: File Being Processed: " + CompleteFilePath); }
+            w.WriteLine("DEBUG - FIle PDF Split - File Being Processed: " + CompleteFilePath);
             // Open the file
             PdfDocument inputDocument = PdfReader.Open(Path.Combine(PathToFolderContainingPDF, PDFFileName), PdfDocumentOpenMode.Import);
 
@@ -43,9 +45,11 @@ namespace PDfSplitLib
                 outputDocument.AddPage(inputDocument.Pages[idx]);
                 String Str = String.Format("{1}_{0}_tempfile.pdf", name, idx + 1);
                 if (Debug){ Console.WriteLine("\nDEBUG: Temp File Name Generated: " + Str); }
+                w.WriteLine("DEBUG - FIle PDF Split - File Generated: " + Str);
                 outputDocument.Save(PathToOutputFolder + Str);
+                w.Flush();
             }
-
+            w.Flush();
 
         }
     }

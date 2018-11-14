@@ -22,8 +22,6 @@ namespace PDfSplitLib
             this.w = w;
         }
 
-
-
         // Processes exactly one page, returns data on 1 single page
         public TesseractOutput OCRImageFile(String PathToPngFile, Boolean Debug)
         {
@@ -31,30 +29,39 @@ namespace PDfSplitLib
             try
             {
                 var testImagePath = PathToPngFile;
+                w.WriteLine("DEBUG - Tesseract Engine Loading...");
                 using (var engine = new TesseractEngine(this.TessDataPath, this.TessLanguage, EngineMode.Default))
                 {
+                    w.WriteLine("DEBUG - Tesseract Image Loading...");
                     using (var img = Pix.LoadFromFile(testImagePath))
                     {
+                        w.WriteLine("DEBUG - Tesseract Page Loading...");
                         using (var page = engine.Process(img))
                         {
+                            w.WriteLine("DEBUG - Tesseract Get Page Content...");
                             var text = page.GetText();
                             if (Debug) { Console.WriteLine("\nDEBUG: Tesseract Mean Confidence: {0}", page.GetMeanConfidence()); }
                             w.WriteLine("DEBUG - Tesseract Confidence: " + page.GetMeanConfidence());
                             TesseractOutput to = new TesseractOutput(page.GetMeanConfidence(), text);
+                            this.w.Flush();
                             return to;
                                 
                         }
                     }
+
                 }
+
             }
             catch (Exception e)
             {
-                w.WriteLine("DEBUG - Tesseract Error: " + e.ToString());
-                Trace.TraceError(e.ToString());
-                if (Debug) { Console.WriteLine("\nUnexpected Error: " + e.Message); }
-                if (Debug) { Console.WriteLine("\nDetails: "); }
-                if (Debug) { Console.WriteLine(e.ToString()); }
+                w.WriteLine("DEBUG - Tesseract Error: " + e.Message);
+                w.WriteLine("DEBUG - Tesseract Error Details: " + e.ToString());
+                //Trace.TraceError(e.ToString());
+                //if (Debug) { Console.WriteLine("\nUnexpected Error: " + e.Message); }
+                //if (Debug) { Console.WriteLine("\nDetails: "); }
+                //if (Debug) { Console.WriteLine(e.ToString()); }
                 //Console.ReadKey();
+                this.w.Flush();
                 return null;
             }
 

@@ -23,7 +23,7 @@ namespace TestApp
 
             //String Res = pss.GetRangesFromRegexGroup(@"C:\dev\docs\", "90000081.pdf", @"Certificate of (Analysis)");
 
-            pss.LoadPDFFile(@"C:\dev\docs\", "90000081.pdf",true);
+            pss.LoadPDFFile(@"C:/dev/docs/", "90000081.pdf",true);
             String Res = pss.GetRangesFromRegexGroup(@"Certificate of (Analysis)");
 
             //String Res = pss.GetRangesFromKeywordAndPageCount(@"C:\dev\docs\", "90000081.pdf", "Certificate of Analysis");

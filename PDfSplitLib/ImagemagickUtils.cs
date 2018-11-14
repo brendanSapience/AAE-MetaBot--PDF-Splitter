@@ -1,6 +1,7 @@
 ﻿using ImageMagick;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +12,14 @@ namespace PDfSplitLib
     {
         double xRes = -1;
         double yRes = -1;
+        StreamWriter w;
         //String PDFFilePath = "";
         MagickReadSettings imsettings = new MagickReadSettings();
-        public ImageMagickUtils(double x, double y)
+        public ImageMagickUtils(double x, double y, StreamWriter w)
         {
             this.xRes = x;
             this.yRes = y;
+            this.w = w;
 
             // Settings the density to 300 dpi will create an image with a better quality
             this.imsettings.Density = new Density(this.xRes, this.yRes);
@@ -29,17 +32,16 @@ namespace PDfSplitLib
                 {
                     // Add all the pages of the pdf file to the collection
                     images.Read(PDFFilePath, this.imsettings);
-
-                    //int page = 1;
-                    foreach (MagickImage image in images)
+                    w.WriteLine("DEBUG - PDF to PNG Conversion Starting.");
+                //int page = 1;
+                foreach (MagickImage image in images)
                     {
-                        // Write page to file that contains the page number
-                        image.Write(PNGFilePath);
-                        // Writing to a specific format works the same as for a single image
-                        //image.Format = MagickFormat.Ptif;
-                        //image.Write(@"C:\dev\docs\split\90000081 - Page 1_tempfile" + page + ".tif");
-                       // page++;
+                    // Write page to file that contains the page number
+                    w.WriteLine("DEBUG - FIle PDF Split - FIle Being Generated: " + PNGFilePath);
+                    image.Write(PNGFilePath);
+                    w.Flush();
                     }
+                    w.Flush();
                 }
         }
 
