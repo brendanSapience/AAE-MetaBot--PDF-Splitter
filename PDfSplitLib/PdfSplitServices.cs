@@ -13,12 +13,12 @@ namespace PDfSplitLib
 
         public void LoadPDFFile(String PDFFilePath, String PDFFileName,Boolean Debug)
         { 
-            f1.LoadPdfFileContent(PDFFilePath,PDFFileName, @"C:\dev\tessdata", "eng",Debug);
+            this.f1.LoadPdfFileContent(PDFFilePath,PDFFileName, @"C:\dev\tessdata", "eng",Debug);
         }
 
         public String GetRangesFromRegexGroup(String RegexWithRepeatedGroup)
         {
-            return f1.GetRangesFromRegexGroup(RegexWithRepeatedGroup, true);
+            return this.f1.GetRangesFromRegexGroup(RegexWithRepeatedGroup, true);
         }
 
         public String GetRangesFromRegexGroup(String PDFFilePath, String PDFFileName, String RegexWithRepeatedGroup)

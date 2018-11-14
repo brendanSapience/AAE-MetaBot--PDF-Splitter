@@ -50,7 +50,7 @@ namespace PDfSplitLib
                 if (Debug) { Console.WriteLine("\nUnexpected Error: " + e.Message); }
                 if (Debug) { Console.WriteLine("\nDetails: "); }
                 if (Debug) { Console.WriteLine(e.ToString()); }
-                Console.ReadKey();
+                //Console.ReadKey();
                 return null;
             }
 

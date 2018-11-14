@@ -20,7 +20,7 @@ namespace PDfSplitLib
             this.PathToTesseractDataFiles = PathToTessData;
             this.LanguageCode = Language;
             Dictionary<int, String> myDict = pu.GetDictionaryFromPdf(RootPath, FileName, this.PathToTesseractDataFiles, this.LanguageCode, Debug);
-            GlobalFileContentDict = myDict;
+            this.GlobalFileContentDict = myDict;
 
         }
 

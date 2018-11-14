@@ -29,7 +29,7 @@ namespace TestApp
             //String Res = pss.GetRangesFromKeywordAndPageCount(@"C:\dev\docs\", "90000081.pdf", "Certificate of Analysis");
 
             Console.Write("\nOutput: "+Res);
-            //Console.ReadKey();
+            Console.ReadKey();
 
 
         }

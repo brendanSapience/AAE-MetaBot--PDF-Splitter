@@ -107,7 +107,11 @@ namespace PDfSplitLib
                 {
                     // do nothing and quit?
                 }
-                DocumentContent.Add(PageNumAsInt, to.getText());
+                if(to != null)
+                {
+                    DocumentContent.Add(PageNumAsInt, to.getText());
+                }
+                
                 //Console.ReadKey();
 
             }
