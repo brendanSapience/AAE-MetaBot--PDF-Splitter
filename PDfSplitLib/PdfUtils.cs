@@ -62,8 +62,14 @@ namespace PDfSplitLib
             // "90000081.pdf"
 
             String TempPath = RootPath + guid + @"\";
+            String LogFile = TempPath + "run.log";
 
+        
             System.IO.Directory.CreateDirectory(TempPath);
+
+            //File.Create(LogFile);
+
+            StreamWriter w = File.AppendText(LogFile);
 
             PdfSharpUtils psu = new PdfSharpUtils();
             psu.SplitAllPDFPages(RootPath, FileName, TempPath, Debug);
@@ -84,18 +90,18 @@ namespace PDfSplitLib
             // this involves downloading the Tesseract language data files locally (see tessdata below).
             //ConfigItem item = LoadJson();
 
-            TesseractUtils tu = new TesseractUtils(PathToTessData, Language);
+            TesseractUtils tu = new TesseractUtils(PathToTessData, Language,w);
 
             string[] PngFiles = Directory.GetFiles(TempPath, "*.png", SearchOption.TopDirectoryOnly);
             foreach (string filepath in PngFiles)
             {
-                if (Debug) { Console.WriteLine("\nDEBUG: Processing Temp Image File: " + filepath); }
-
+                if (Debug) {Console.WriteLine("\nDEBUG: Processing Temp Image File: " + filepath); }
+                w.WriteLine("DEBUG: Processing Temp Image File: " + filepath);
                 String filename = Path.GetFileName(filepath);
                 String[] tempArr = filename.Split('_');
                 String PageNum = tempArr[0];
                 if (Debug) { Console.WriteLine("\nDEBUG: Current Page Number: " + PageNum); }
-
+                w.WriteLine("DEBUG: Current Page Number: " + PageNum);
 
                 TesseractOutput to = tu.OCRImageFile(filepath, Debug);
                 //Console.WriteLine(to.getText());
@@ -109,13 +115,18 @@ namespace PDfSplitLib
                 }
                 if(to != null)
                 {
+                    w.WriteLine("DEBUG: Adding Document to Dictionary: " + PageNumAsInt);
                     DocumentContent.Add(PageNumAsInt, to.getText());
                 }
-                
+                else
+                {
+                    w.WriteLine("DEBUG: ERROR, Could not add Document to Dictionary: " + PageNumAsInt);
+                }
+
                 //Console.ReadKey();
-
+                w.Flush();
             }
-
+            w.Close();
             // Delete Temp folder if not in Debug mode
             if (!Debug) { System.IO.Directory.Delete(TempPath,true); }
 

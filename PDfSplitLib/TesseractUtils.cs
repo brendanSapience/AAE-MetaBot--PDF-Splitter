@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,13 @@ namespace PDfSplitLib
     {
         String TessDataPath = "";
         String TessLanguage = "";
+        StreamWriter w;
 
-        public TesseractUtils(String PathToTessDataFiles, String LanguageCode)
+        public TesseractUtils(String PathToTessDataFiles, String LanguageCode, StreamWriter w)
         {
             this.TessDataPath = PathToTessDataFiles; // should be a path to a folder, not an individual file
             this.TessLanguage = LanguageCode; // should be 3 characters
+            this.w = w;
         }
 
 
@@ -36,7 +39,7 @@ namespace PDfSplitLib
                         {
                             var text = page.GetText();
                             if (Debug) { Console.WriteLine("\nDEBUG: Tesseract Mean Confidence: {0}", page.GetMeanConfidence()); }
-
+                            w.WriteLine("DEBUG - Tesseract Confidence: " + page.GetMeanConfidence());
                             TesseractOutput to = new TesseractOutput(page.GetMeanConfidence(), text);
                             return to;
                                 
@@ -46,6 +49,7 @@ namespace PDfSplitLib
             }
             catch (Exception e)
             {
+                w.WriteLine("DEBUG - Tesseract Error: " + e.ToString());
                 Trace.TraceError(e.ToString());
                 if (Debug) { Console.WriteLine("\nUnexpected Error: " + e.Message); }
                 if (Debug) { Console.WriteLine("\nDetails: "); }
